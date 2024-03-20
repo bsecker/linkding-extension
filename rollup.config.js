@@ -63,5 +63,24 @@ export default [
 		watch: {
 			clearScreen: false
 		}
+	},
+
+	// Content script bundle
+	{
+		input: 'src/content.js',
+		output: {
+			sourcemap: true,
+			format: 'iife',
+			name: 'linkdingContentScript',
+			file: 'build/content.js'
+		},
+		plugins: [
+			resolve({ browser: true }),
+			commonjs(),
+			production && terser()
+		],
+		watch: {
+			clearScreen: false
+		}
 	}
 ];

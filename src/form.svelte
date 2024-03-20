@@ -65,6 +65,8 @@
     shared = configuration.shareSelected;
     unread = configuration.unreadSelected;
 
+    notes = localStorage.getItem("markdown") || "nothing set";
+
     const existingBookmark = tabMetadata.bookmark;
     if (existingBookmark) {
       bookmarkExists = true;
