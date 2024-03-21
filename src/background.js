@@ -116,3 +116,27 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   let tabMetadata = await loadTabMetadata(tab.url, true);
   setDynamicBadge(tabId, tabMetadata);
 });
+
+browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  if (message.action == "highlight") {
+    console.log(message.markdown);
+    
+    const conf = await getConfiguration();
+    hasCompleteConfiguration = isConfigurationComplete(conf);
+
+    const ld = new LinkdingApi(conf);
+    const active = await ld.getActiveNote();
+
+    console.log("active note", active);
+
+    if (!active) {
+      return;
+    }
+
+    const resp = await ld.updateBookmark(active.id, {
+      notes: active.notes + "\n" + message.markdown
+    })
+    
+    console.log("response", resp);
+  }
+});

@@ -54,8 +54,3 @@ export function removeBadge(tabId) {
   action.setBadgeText({ text: "", tabId: tabId });
 }
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action == "highlight") {
-    console.log(message.markdown);
-  }
-});

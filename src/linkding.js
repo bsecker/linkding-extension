@@ -72,6 +72,33 @@ export class LinkdingApi {
       });
   }
 
+  async updateBookmark(bookmarkId, bookmark) {
+    const configuration = this.configuration;
+
+    return fetch(
+      `${configuration.baseUrl}/api/bookmarks/${bookmarkId}/`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Token ${configuration.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookmark),
+      }).then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else if (response.status === 400) {
+          return response
+            .json()
+            .then((body) =>
+              Promise.reject(`Validation error: ${JSON.stringify(body)}`)
+            );
+        } else {
+          return Promise.reject(`Request error: ${response.statusText}`);
+        }
+      });
+  }
+
   async getTags() {
     const configuration = this.configuration;
 

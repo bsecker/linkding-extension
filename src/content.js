@@ -34,7 +34,19 @@ function processSelection(selection) {
 }
 
 function notifyExtension(e) {
-    processSelection(window.getSelection());
+    var selectedText = window.getSelection().toString();
+    if (selectedText.length > 0) {
+        var button = document.createElement("button");
+        button.innerHTML = "Highlight";
+        button.style.position = "fixed";
+        button.style.top = e.clientY + "px";
+        button.style.left = e.clientX + "px";
+        button.addEventListener("click", function() {
+            processSelection(window.getSelection());
+            document.body.removeChild(button);
+        });
+        document.body.appendChild(button);
+    }
 }
 
 window.addEventListener("mouseup", notifyExtension);
