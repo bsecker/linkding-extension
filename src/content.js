@@ -37,6 +37,8 @@ function notifyExtension(e) {
     var selectedText = window.getSelection().toString();
     if (selectedText.length > 0) {
         var button = document.createElement("button");
+        var uniqueId = "linkding-highlight-button"; // Generate a unique ID
+        button.id = uniqueId; // Set the ID of the button
         button.innerHTML = "Highlight";
         button.style.position = "fixed";
         button.style.top = e.clientY + "px";
@@ -50,3 +52,10 @@ function notifyExtension(e) {
 }
 
 window.addEventListener("mouseup", notifyExtension);
+
+document.addEventListener("click", function(event) {
+    var button = document.querySelector("#linkding-highlight-button"); // Use the unique ID in the query selector
+    if (button && !button.contains(event.target)) {
+        document.body.removeChild(button);
+    }
+});
