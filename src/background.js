@@ -133,9 +133,9 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       return;
     }
 
-    const resp = await ld.updateBookmark(active.id, {
-      notes: active.notes + "\n" + message.markdown
-    })
+    // const resp = await ld.updateBookmark(active.id, {
+    //   notes: active.notes + "\n" + message.markdown
+    // })
     
     console.log("response", resp);
   }

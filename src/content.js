@@ -35,10 +35,23 @@ function processSelection(selection) {
 
 function notifyExtension(e) {
     var selectedText = window.getSelection().toString();
+    
+    e.preventDefault();
+    
+    var button = document.querySelector("#linkding-highlight-button"); // Use the unique ID in the query selector
+    console.log(button);
+
+    // If the button exists and the click is not on the button, remove the button
+    if (button && !button.contains(e.target)) {
+        document.body.removeChild(button);
+        return
+    }
+
+    // otherwise, create the button
     if (selectedText.length > 0) {
         var button = document.createElement("button");
-        var uniqueId = "linkding-highlight-button"; // Generate a unique ID
-        button.id = uniqueId; // Set the ID of the button
+        // var uniqueId = "linkding-highlight-button"; 
+        // button.id = uniqueId; // Assign the unique ID
         button.innerHTML = "Highlight";
         button.style.position = "fixed";
         button.style.top = e.clientY + "px";
@@ -51,11 +64,13 @@ function notifyExtension(e) {
     }
 }
 
-window.addEventListener("mouseup", notifyExtension);
+document.addEventListener("mouseup", notifyExtension);
 
-document.addEventListener("click", function(event) {
-    var button = document.querySelector("#linkding-highlight-button"); // Use the unique ID in the query selector
-    if (button && !button.contains(event.target)) {
-        document.body.removeChild(button);
-    }
-});
+// document.addEventListener("click", function(event) {
+//     // event.preventDefault();
+//     var button = document.querySelector("#linkding-highlight-button"); // Use the unique ID in the query selector
+//     console.log(button);
+//     if (button && !button.contains(event.target)) {
+//         document.body.removeChild(button);
+//     }
+// });
