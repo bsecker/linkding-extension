@@ -48,6 +48,30 @@ export class LinkdingApi {
     });
   }
 
+  async getActiveNote() {
+    // Get the first note that has the #active tag
+    const configuration = this.configuration;
+
+    return fetch(
+      `${configuration.baseUrl}/api/bookmarks/?limit=1&q=%23active`,
+      {
+        headers: {
+          Authorization: `Token ${configuration.token}`,
+          "Content-Type": "application/json",
+        }
+      }).then((response) => {
+        if (response.status === 200) {
+          return response.json().then((body) => {
+            if (body.count == 0) return null; // no active note
+            return body.results[0];
+          });
+        }
+        return Promise.reject(
+          `Error retrieving active note: ${response.statusText}`
+        );
+      });
+  }
+
   async getTags() {
     const configuration = this.configuration;
 

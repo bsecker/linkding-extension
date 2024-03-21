@@ -1,4 +1,5 @@
-import TurndownService from 'turndown'
+import TurndownService from 'turndown';
+import { getBrowser, getCurrentTabInfo } from './browser';
 
 var turndownService = new TurndownService({
     headingStyle: "atx",
@@ -27,10 +28,9 @@ function getSelectionHtml() {
 function processSelection(selection) {
     var selectedText = selection;
     if (selectedText.toString().length == 0) return;
-    
-    var markdown = turndownService.turndown(getSelectionHtml());
 
-    localStorage.setItem('markdown', markdown);
+    var markdown = turndownService.turndown(getSelectionHtml());
+    getBrowser().runtime.sendMessage({ action: "highlight", markdown: markdown });
 }
 
 function notifyExtension(e) {

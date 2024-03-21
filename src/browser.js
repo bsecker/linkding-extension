@@ -3,7 +3,7 @@ export function getBrowser() {
 }
 
 export async function getCurrentTabInfo() {
-  const tabs = await getBrowser().tabs.query({active: true, currentWindow: true});
+  const tabs = await getBrowser().tabs.query({ active: true, currentWindow: true });
   const tab = tabs && tabs[0];
 
   return {
@@ -28,7 +28,7 @@ export function getStorageItem(key) {
 
 export function setStorageItem(key, value) {
   if (useChromeStorage()) {
-    return chrome.storage.local.set({[key]: value});
+    return chrome.storage.local.set({ [key]: value });
   } else {
     localStorage.setItem(key, value);
     return Promise.resolve();
@@ -53,3 +53,9 @@ export function removeBadge(tabId) {
   const action = browser.browserAction || browser.action;
   action.setBadgeText({ text: "", tabId: tabId });
 }
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action == "highlight") {
+    console.log(message.markdown);
+  }
+});
