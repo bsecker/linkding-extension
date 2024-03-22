@@ -120,7 +120,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.action == "highlight") {
     console.log(message.markdown);
-    
+
     const conf = await getConfiguration();
     hasCompleteConfiguration = isConfigurationComplete(conf);
 
@@ -136,7 +136,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     // const resp = await ld.updateBookmark(active.id, {
     //   notes: active.notes + "\n" + message.markdown
     // })
-    
-    console.log("response", resp);
+
+    // console.log("response", resp);
   }
 });

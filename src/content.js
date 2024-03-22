@@ -33,38 +33,45 @@ function processSelection(selection) {
     getBrowser().runtime.sendMessage({ action: "highlight", markdown: markdown });
 }
 
-function notifyExtension(e) {
+function clearSelection() {
+    if (window.getSelection) { window.getSelection().removeAllRanges(); }
+    else if (document.selection) { document.selection.empty(); }
+}
+
+function handleMouseUp(e) {
     var selectedText = window.getSelection().toString();
-    
-    e.preventDefault();
-    
-    var button = document.querySelector("#linkding-highlight-button"); // Use the unique ID in the query selector
-    console.log(button);
+
+    var existingButton = document.querySelector("#linkding-highlight-button");
+    console.log("Existing button", existingButton);
 
     // If the button exists and the click is not on the button, remove the button
-    if (button && !button.contains(e.target)) {
-        document.body.removeChild(button);
+    console.log("target", e.target);
+    if (existingButton && e.target !== existingButton) {
+        console.log("removing button")
+        clearSelection()
+        document.body.removeChild(existingButton);
         return
     }
 
     // otherwise, create the button
     if (selectedText.length > 0) {
         var button = document.createElement("button");
-        // var uniqueId = "linkding-highlight-button"; 
-        // button.id = uniqueId; // Assign the unique ID
+        var uniqueId = "linkding-highlight-button";
+        button.id = uniqueId; // Assign the unique ID
         button.innerHTML = "Highlight";
         button.style.position = "fixed";
         button.style.top = e.clientY + "px";
         button.style.left = e.clientX + "px";
-        button.addEventListener("click", function() {
+        button.addEventListener("click", function () {
             processSelection(window.getSelection());
             document.body.removeChild(button);
+            clearSelection();
         });
-        document.body.appendChild(button);
+        if (!existingButton) document.body.appendChild(button);
     }
 }
 
-document.addEventListener("mouseup", notifyExtension);
+document.addEventListener("mouseup", handleMouseUp);
 
 // document.addEventListener("click", function(event) {
 //     // event.preventDefault();

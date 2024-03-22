@@ -25,6 +25,7 @@
   let profile = null;
   let tabInfo = null;
   let extensionConfiguration = null;
+  let enableHighlighting = false;
 
   $: {
     if (api && configuration) {
@@ -117,6 +118,10 @@
     editNotes = !editNotes;
   }
 
+  function toggleHighlighting() {
+    enableHighlighting = !enableHighlighting;
+  }
+
 </script>
 <div class="title-row">
   <h6>{bookmarkExists ? "Edit Bookmark" : "Add bookmark"}</h6>
@@ -191,6 +196,7 @@
   {/if}
   {#if saveState !== 'success'}
     <div class="button-row">
+      <button type="button" class="btn" on:click|preventDefault={toggleHighlighting}>{ enableHighlighting ? "Stop" : "Start" } Highlighting</button>
       <button type="submit" class="btn btn-primary" class:loading={saveState === 'loading'}>Save</button>
     </div>
   {/if}
