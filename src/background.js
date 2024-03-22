@@ -8,6 +8,8 @@ let api = null;
 let configuration = null;
 let hasCompleteConfiguration = false;
 
+let highlightingEnabled = false;
+
 async function initApi() {
   if (api) {
     return true;
@@ -117,28 +119,41 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   setDynamicBadge(tabId, tabMetadata);
 });
 
-browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  const conf = await getConfiguration();
-  hasCompleteConfiguration = isConfigurationComplete(conf);
+browser.runtime.onMessage.addListener((message, sender) => {
+  return new Promise(async (resolve) => {
+    if (message.action === "highlight") {
+      console.log("Sending highlight to linkding: ", message.markdown);
 
-  const ld = new LinkdingApi(conf);
-  const active = await ld.getActiveNote();
+      const conf = await getConfiguration();
+      hasCompleteConfiguration = isConfigurationComplete(conf);
 
-  if (message.action == "highlight") {
-    console.log(message.markdown);
-    console.log("active note", active);
+      if (!hasCompleteConfiguration) {
+        console.log("Highlighting not enabled: Incomplete configuration")
+        return resolve();
+      }
 
-    if (!active) {
-      return;
+      const ld = new LinkdingApi(conf);
+      const active = await ld.getActiveNote();
+
+      if (!active) {
+        console.log("No active bookmark")
+        return resolve();
+      }
+
+      const response = await ld.updateBookmark(active.id, {
+        notes: `${active.notes}\n\nFrom ${message.url}:\n\n> ${message.markdown}`
+      });
+
+      console.log("response", response);
+    }
+    else if (message.action === "getHighlightingEnabled") {
+      return resolve({ enabled: highlightingEnabled });
+    }
+    else if (message.action === "toggleHighlighting") {
+      highlightingEnabled = !highlightingEnabled;
+      return resolve({ enabled: highlightingEnabled })
     }
 
-    // const resp = await ld.updateBookmark(active.id, {
-    //   notes: active.notes + "\n" + message.markdown
-    // })
-
-    // console.log("response", resp);
-  }
-  else if (message.action == "getHightlightingEnabled") {
-    sendResponse({ enabled: true });
-  }
+    resolve();
+  });
 });

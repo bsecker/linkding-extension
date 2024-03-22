@@ -1,6 +1,6 @@
 <script>
   import TagAutocomplete from './TagAutocomplete.svelte'
-  import {getCurrentTabInfo, openOptions, showBadge} from "./browser";
+  import {getBrowser, getCurrentTabInfo, openOptions, showBadge} from "./browser";
   import {loadTabMetadata, clearCachedTabMetadata} from "./cache";
   import {getProfile, updateProfile} from "./profile";
   import {getConfiguration} from "./configuration";
@@ -78,6 +78,11 @@
       unread = existingBookmark.unread;
       shared = existingBookmark.shared;
     }
+    
+    getBrowser().runtime.sendMessage({action: "getHighlightingEnabled"}).then(response => {
+      console.log("Highlighting enabled: " + response.enabled)
+      enableHighlighting = response.enabled;
+    });
   }
 
   async function handleSubmit() {
@@ -120,6 +125,7 @@
 
   function toggleHighlighting() {
     enableHighlighting = !enableHighlighting;
+    getBrowser().runtime.sendMessage({action: "toggleHighlighting"});
   }
 
 </script>

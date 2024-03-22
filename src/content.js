@@ -30,7 +30,7 @@ function processSelection(selection) {
     if (selectedText.toString().length == 0) return;
 
     var markdown = turndownService.turndown(getSelectionHtml());
-    getBrowser().runtime.sendMessage({ action: "highlight", markdown: markdown });
+    getBrowser().runtime.sendMessage({ action: "highlight", markdown: markdown, url: window.location.href });
 }
 
 function clearSelection() {
@@ -39,8 +39,7 @@ function clearSelection() {
 }
 
 async function isHighlightingEnabled() {
-    response = await getBrowser().runtime.sendMessage({ action: "getHightlightingEnabled" });
-    console.log("highlighting enabled response: ", response);
+    const response = await getBrowser().runtime.sendMessage({ action: "getHighlightingEnabled" });
     return response.enabled;
 }
 
