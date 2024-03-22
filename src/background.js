@@ -118,15 +118,14 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 });
 
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  const conf = await getConfiguration();
+  hasCompleteConfiguration = isConfigurationComplete(conf);
+
+  const ld = new LinkdingApi(conf);
+  const active = await ld.getActiveNote();
+
   if (message.action == "highlight") {
     console.log(message.markdown);
-
-    const conf = await getConfiguration();
-    hasCompleteConfiguration = isConfigurationComplete(conf);
-
-    const ld = new LinkdingApi(conf);
-    const active = await ld.getActiveNote();
-
     console.log("active note", active);
 
     if (!active) {
@@ -138,5 +137,8 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     // })
 
     // console.log("response", resp);
+  }
+  else if (message.action == "getHightlightingEnabled") {
+    sendResponse({ enabled: true });
   }
 });

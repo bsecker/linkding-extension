@@ -38,16 +38,24 @@ function clearSelection() {
     else if (document.selection) { document.selection.empty(); }
 }
 
-function handleMouseUp(e) {
+async function isHighlightingEnabled() {
+    response = await getBrowser().runtime.sendMessage({ action: "getHightlightingEnabled" });
+    console.log("highlighting enabled response: ", response);
+    return response.enabled;
+}
+
+async function handleMouseUp(e) {
+
+    const enabled = await isHighlightingEnabled();
+    if (!enabled) return;
+
     var selectedText = window.getSelection().toString();
 
     var existingButton = document.querySelector("#linkding-highlight-button");
-    console.log("Existing button", existingButton);
 
     // If the button exists and the click is not on the button, remove the button
     console.log("target", e.target);
     if (existingButton && e.target !== existingButton) {
-        console.log("removing button")
         clearSelection()
         document.body.removeChild(existingButton);
         return
@@ -71,13 +79,4 @@ function handleMouseUp(e) {
     }
 }
 
-document.addEventListener("mouseup", handleMouseUp);
-
-// document.addEventListener("click", function(event) {
-//     // event.preventDefault();
-//     var button = document.querySelector("#linkding-highlight-button"); // Use the unique ID in the query selector
-//     console.log(button);
-//     if (button && !button.contains(event.target)) {
-//         document.body.removeChild(button);
-//     }
-// });
+document.addEventListener("mouseup", async (event) => await handleMouseUp(event));
