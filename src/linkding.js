@@ -72,6 +72,71 @@ export class LinkdingApi {
       });
   }
 
+  /**
+   * Remove "#active" tag from all notes and set the active note
+   * @param {int} noteID 
+   */
+  async setActiveNote(noteID) {
+    const configuration = this.configuration;
+
+    const resp = await fetch(
+      `${configuration.baseUrl}/api/bookmarks/?q=%23active&limit=1`,
+      {
+        headers: {
+          Authorization: `Token ${configuration.token}`,
+          "Content-Type": "application/json",
+        }
+      })
+    const json = await resp.json();
+
+    if (json.count > 0) {
+      const activeBookmark = json.results[0];
+      activeBookmark.tag_names = activeBookmark.tag_names.filter(tag => tag !== "active");
+
+      // Remove #active tag from active note
+      console.log("Removing #active tag from note", activeBookmark.id);
+      await fetch(
+        `${configuration.baseUrl}/api/bookmarks/${activeBookmark.id}/`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Token ${configuration.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(activeBookmark),
+        })
+
+    } else {
+      console.log("No active note to remove #active tag from")
+    }
+
+    // Set the active note
+    console.log("Setting note as active", noteID);
+    const bookmark = await this.getBookmark(noteID);
+    bookmark.tag_names.push("active");
+
+    return fetch(
+      `${configuration.baseUrl}/api/bookmarks/${noteID}/`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Token ${configuration.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookmark)
+      }).then(async (response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else if (response.status === 400) {
+          const body = await response
+            .json();
+          return await Promise.reject(`Validation error: ${JSON.stringify(body)}`);
+        } else {
+          return Promise.reject(`Request error: ${response.statusText}`);
+        }
+      });
+  }
+
   async updateBookmark(bookmarkId, bookmark) {
     const configuration = this.configuration;
 

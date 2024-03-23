@@ -66,7 +66,7 @@
     shared = configuration.shareSelected;
     unread = configuration.unreadSelected;
 
-    notes = localStorage.getItem("markdown") || "nothing set";
+    notes = localStorage.getItem("markdown") || "";
 
     const existingBookmark = tabMetadata.bookmark;
     if (existingBookmark) {
@@ -124,8 +124,17 @@
   }
 
   function toggleHighlighting() {
-    enableHighlighting = !enableHighlighting;
-    getBrowser().runtime.sendMessage({action: "toggleHighlighting"});
+    getBrowser().runtime.sendMessage({action: "toggleHighlighting", activeBookmarkTitle: title }).then(response => {
+      console.log("response", response);
+      if (response.error) {
+        saveState = "error";
+        errorMessage = response.error;
+      }
+      else {
+        console.log("Highlighting enabled: " + response.enabled)
+        enableHighlighting = !enableHighlighting;
+      }
+    });
   }
 
 </script>
