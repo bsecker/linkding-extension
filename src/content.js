@@ -72,6 +72,14 @@ async function handleMouseUp(e) {
         button.addEventListener("click", function () {
             processSelection(window.getSelection());
             document.body.removeChild(button);
+
+            // // highlight the selected text
+            // var selection = window.getSelection();
+            // var range = selection.getRangeAt(0);
+            // var span = document.createElement("span");
+            // span.style.backgroundColor = "yellow";
+            // range.surroundContents(span);
+
             clearSelection();
         });
         if (!existingButton) document.body.appendChild(button);
