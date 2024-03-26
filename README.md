@@ -1,3 +1,5 @@
+This is a personal fork of the linkding extension that adds a "highlight mode" to send selected text to my linkding instance.
+
 # linkding extension
 
 Companion extension for the self-hosted [linkding](https://github.com/sissbruecker/linkding) bookmark service.

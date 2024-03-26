@@ -51,5 +51,10 @@
     "tabs",
     "http://*/*",
     "https://*/*"
-  ]
+  ], 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "linkding-extension@benfork"
+    }
+  }
 }
